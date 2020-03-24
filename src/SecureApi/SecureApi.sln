@@ -13,6 +13,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{EAC8E1B6-8412-46A8-B4B2-3F238FF0601F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", "{B885BF88-5D5F-4C25-AF42-C5BBB92C3CDE}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\deployment\secureapi.deployment.json = ..\..\deployment\secureapi.deployment.json
+		..\..\deployment\secureapi.deployment.parameters.json = ..\..\deployment\secureapi.deployment.parameters.json
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A11899D7-D9AF-491E-9FC7-8B9542F57281}"
 EndProject
