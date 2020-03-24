@@ -16,9 +16,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A11899D7-D9AF-491E-9FC7-8B9542F57281}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureApi.Api", "SecureApi.Api\SecureApi.Api.csproj", "{0604CD5F-A314-4E18-ADCC-59864A0D1B15}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0604CD5F-A314-4E18-ADCC-59864A0D1B15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0604CD5F-A314-4E18-ADCC-59864A0D1B15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0604CD5F-A314-4E18-ADCC-59864A0D1B15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0604CD5F-A314-4E18-ADCC-59864A0D1B15}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0604CD5F-A314-4E18-ADCC-59864A0D1B15} = {EAC8E1B6-8412-46A8-B4B2-3F238FF0601F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E7CF1A8-C2F1-4A23-ACF8-7AE827BDEEFB}
