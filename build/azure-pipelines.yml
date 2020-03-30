@@ -30,6 +30,18 @@ steps:
     projects: '$(apiProject)'
     arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Api\SecureApi.zip"'
 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '$(conferencesProject)'
+    arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Conferences\ConferencesAPI.zip"'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '$(speakerProject)'
+    arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Speaker\SpeakerAPI.zip"'
+
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
