@@ -24,13 +24,6 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
@@ -41,6 +34,14 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '**\deployment\'
+    Contents: '*.json'
+    TargetFolder: '$(build.artifactStagingDirectory)\deployment'
+    CleanTargetFolder: true
+    OverWrite: true
 
 - task: PublishBuildArtifacts@1
   inputs:
