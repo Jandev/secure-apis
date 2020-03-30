@@ -37,7 +37,7 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '**\deployment\'
+    SourceFolder: 'deployment'
     Contents: '*.json'
     TargetFolder: '$(build.artifactStagingDirectory)\deployment'
     CleanTargetFolder: true
