@@ -13,6 +13,9 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  apiProject: '**\SecureApi\SecureApi.Api\SecureApi.Api.csproj'
+  conferencesProject: '**\SecureApi\SecureApi.Conferences\SecureApi.Conferences.csproj'
+  speakerProject: '**\SecureApi\SecureApi.Speaker\SecureApi.Speaker.csproj'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -27,6 +30,12 @@ steps:
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '$(apiProject)'
+    arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Api\SecureApi.zip"'
 
 - task: VSTest@2
   inputs:
