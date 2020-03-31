@@ -43,6 +43,9 @@
             "properties": {
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
             },
+            "identity":{
+                "type": "SystemAssigned"
+            },
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
             ],
@@ -85,6 +88,9 @@
             "properties": {
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
             },
+            "identity":{
+                "type": "SystemAssigned"
+            },
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
             ],
@@ -126,6 +132,9 @@
             "location": "[resourceGroup().location]",
             "properties": {
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+            },
+            "identity":{
+                "type": "SystemAssigned"
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
