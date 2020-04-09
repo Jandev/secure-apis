@@ -48,11 +48,12 @@ namespace SecureApi.Api.Controllers
             var azureServiceTokenProvider = new AzureServiceTokenProvider();
             var tenantId = _configuration["ActiveDirectory:TenantId"];
             string accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(applicationIdUri, tenantId: tenantId);
+
             var httpClient = clientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
             var response = await httpClient.GetAsync(speakerApiUri);
             var body = await response.Content.ReadAsStringAsync();
-
             return new ApiCallDetails
             {
                 AccessToken = accessToken,

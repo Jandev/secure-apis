@@ -25,7 +25,7 @@ namespace SecureApi.Speaker.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "SecureApi.Speaker.Reader")]
+        [Authorize( Roles = "SecureApi.Speaker.Reader")]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
