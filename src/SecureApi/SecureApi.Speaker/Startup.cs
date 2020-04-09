@@ -30,10 +30,6 @@ namespace SecureApi.Speaker
 
             services.AddAuthorization(o =>
             {
-                // Only tokens with a valid scope should be authorized.
-                // Every identity in the tenant has this, so don't use this for authorization.
-                o.AddPolicy("default",
-                    policy => { policy.RequireClaim(Constants.ScopeClaimType, "user_impersonation"); });
             });
 
             services
