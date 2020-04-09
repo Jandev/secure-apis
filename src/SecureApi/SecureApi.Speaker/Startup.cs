@@ -30,10 +30,14 @@ namespace SecureApi.Speaker
 
             services.AddAuthorization(o =>
             {
+                
             });
 
             services
-                .AddAuthentication(o => { o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; })
+                .AddAuthentication(o =>
+                {
+                    o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
                 .AddJwtBearer(o =>
                 {
                     o.Authority = Configuration["Authentication:Authority"];
@@ -66,6 +70,8 @@ namespace SecureApi.Speaker
             app.UseRouting();
 
             app.UseAuthorization();
+            
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
