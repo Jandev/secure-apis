@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace SecureApi.Api.Controllers
@@ -19,13 +20,16 @@ namespace SecureApi.Api.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
         private readonly IHttpClientFactory clientFactory;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<WeatherForecastController> _logger;
 
         public WeatherForecastController(
             IHttpClientFactory clientFactory,
+            IConfiguration configuration,
             ILogger<WeatherForecastController> logger)
         {
             this.clientFactory = clientFactory;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -39,7 +43,8 @@ namespace SecureApi.Api.Controllers
         {
             const string applicationIdUri = "api://6d7649c2-de4f-4ce4-83f5-422d4f6c5fe0";
             var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            string accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(applicationIdUri);
+            var tenantId = _configuration["ActiveDirectory:TenantId"];
+            string accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(applicationIdUri, tenantId: tenantId);
             var httpClient = clientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             var response = await httpClient.GetAsync("https://janv-secureapi-speakers.azurewebsites.net/WeatherForecast");
