@@ -30,9 +30,12 @@ namespace SecureApi.Speaker
 
             services.AddAuthorization(o =>
             {
-                
+                o.AddPolicy("default", policy =>
+                {
+                    // Require the basic "Access app-name" claim by default
+                    policy.RequireClaim(Constants.ScopeClaimType, "user_impersonation");
+                });
             });
-
             services
                 .AddAuthentication(o =>
                 {
@@ -69,9 +72,9 @@ namespace SecureApi.Speaker
 
             app.UseRouting();
 
-            app.UseAuthorization();
-            
             app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
