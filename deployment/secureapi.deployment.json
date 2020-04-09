@@ -1,173 +1,187 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "variables": {
-        "projectPrefix": "janv-secureapi",
-        "serverfarm": {
-            "instanceName": "secureapi-farm",
-            "sku": "S1"
-        },
-        "apis": {
-            "backendForFrontend": {
-                "instanceName": "[concat(variables('projectPrefix'), '-api')]"
-            },
-            "speakers": {
-                "instanceName": "[concat(variables('projectPrefix'), '-speakers')]"
-            },
-            "conferences": {
-                "instanceName": "[concat(variables('projectPrefix'), '-conferences')]"
-            }
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Authentication:Authority": {
+      "type": "string"
     },
-    "resources": [
+    "Authentication:ClientId": {
+      "type": "string"
+    },
+    "Authentication:AppIdUri": {
+      "type": "string"
+    } 
+  },
+  "variables": {
+    "projectPrefix": "janv-secureapi",
+    "serverfarm": {
+      "instanceName": "secureapi-farm",
+      "sku": "S1"
+    },
+    "apis": {
+      "backendForFrontend": {
+        "instanceName": "[concat(variables('projectPrefix'), '-api')]"
+      },
+      "speakers": {
+        "instanceName": "[concat(variables('projectPrefix'), '-speakers')]"
+      },
+      "conferences": {
+        "instanceName": "[concat(variables('projectPrefix'), '-conferences')]"
+      }
+    }
+  },
+  "resources": [
+    {
+      "name": "[variables('serverfarm').instanceName]",
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2019-08-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+      },
+      "properties": {
+        "reserved": false
+      },
+      "sku": {
+        "name": "[variables('serverfarm').sku]"
+      }
+    },
+    {
+      "apiVersion": "2018-11-01",
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "name": "[variables('apis').backendForFrontend.instanceName]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+      ],
+      "resources": [
         {
-            "name": "[variables('serverfarm').instanceName]",
-            "type": "Microsoft.Web/serverfarms",
-            "apiVersion": "2019-08-01",
-            "location": "[resourceGroup().location]",
-            "tags": {
-            },
-            "properties": {
-                "reserved": false
-            },
-            "sku": {
-                "name": "[variables('serverfarm').sku]"
-            }
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "type": "config",
+          "dependsOn": [
+            "[concat('Microsoft.Web/Sites/', variables('apis').backendForFrontend.instanceName)]"
+          ],
+          "properties": {
+            "webSocketsEnabled": false,
+            "alwaysOn": true,
+            "requestTracingEnabled": true,
+            "httpLoggingEnabled": true,
+            "logsDirectorySizeLimit": 40,
+            "detailedErrorLoggingEnabled": true
+          }
         },
         {
-            "apiVersion": "2018-11-01",
-            "type": "Microsoft.Web/sites",
-            "kind": "app",
-            "name": "[variables('apis').backendForFrontend.instanceName]",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
-            },
-            "identity":{
-                "type": "SystemAssigned"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
-            ],
-            "resources": [
-                {
-                    "apiVersion": "2015-08-01",
-                    "name": "web",
-                    "type": "config",
-                    "dependsOn": [
-                        "[concat('Microsoft.Web/Sites/', variables('apis').backendForFrontend.instanceName)]"
-                    ],
-                    "properties": {
-                        "webSocketsEnabled": false,
-                        "alwaysOn": true,
-                        "requestTracingEnabled": true,
-                        "httpLoggingEnabled": true,
-                        "logsDirectorySizeLimit": 40,
-                        "detailedErrorLoggingEnabled": true
-                    }
-                },
-                {
-                    "apiVersion": "2015-08-01",
-                    "name": "appsettings",
-                    "type": "config",
-                    "dependsOn": [
-                        "[concat('Microsoft.Web/Sites/', variables('apis').backendForFrontend.instanceName)]"
-                    ],
-                    "properties": {
-                        "appsettingTest1": "appsettingTest1Value"
-                    }
-                }
-            ]
-        },
-        {
-            "apiVersion": "2018-11-01",
-            "type": "Microsoft.Web/sites",
-            "kind": "app",
-            "name": "[variables('apis').conferences.instanceName]",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
-            },
-            "identity":{
-                "type": "SystemAssigned"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
-            ],
-            "resources": [
-                {
-                    "apiVersion": "2015-08-01",
-                    "name": "web",
-                    "type": "config",
-                    "dependsOn": [
-                        "[concat('Microsoft.Web/Sites/', variables('apis').conferences.instanceName)]"
-                    ],
-                    "properties": {
-                        "webSocketsEnabled": false,
-                        "alwaysOn": true,
-                        "requestTracingEnabled": true,
-                        "httpLoggingEnabled": true,
-                        "logsDirectorySizeLimit": 40,
-                        "detailedErrorLoggingEnabled": true
-                    }
-                },
-                {
-                    "apiVersion": "2015-08-01",
-                    "name": "appsettings",
-                    "type": "config",
-                    "dependsOn": [
-                        "[concat('Microsoft.Web/Sites/', variables('apis').conferences.instanceName)]"
-                    ],
-                    "properties": {
-                        "appsettingTest1": "appsettingTest1Value"
-                    }
-                }
-            ]
-        },
-        {
-            "apiVersion": "2018-11-01",
-            "type": "Microsoft.Web/sites",
-            "kind": "app",
-            "name": "[variables('apis').speakers.instanceName]",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
-            },
-            "identity":{
-                "type": "SystemAssigned"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
-            ],
-            "resources": [
-                {
-                    "apiVersion": "2015-08-01",
-                    "name": "web",
-                    "type": "config",
-                    "dependsOn": [
-                        "[concat('Microsoft.Web/Sites/', variables('apis').speakers.instanceName)]"
-                    ],
-                    "properties": {
-                        "webSocketsEnabled": false,
-                        "alwaysOn": true,
-                        "requestTracingEnabled": true,
-                        "httpLoggingEnabled": true,
-                        "logsDirectorySizeLimit": 40,
-                        "detailedErrorLoggingEnabled": true
-                    }
-                },
-                {
-                    "apiVersion": "2015-08-01",
-                    "name": "appsettings",
-                    "type": "config",
-                    "dependsOn": [
-                        "[concat('Microsoft.Web/Sites/', variables('apis').speakers.instanceName)]"
-                    ],
-                    "properties": {
-                        "appsettingTest1": "appsettingTest1Value"
-                    }
-                }
-            ]
+          "apiVersion": "2015-08-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[concat('Microsoft.Web/Sites/', variables('apis').backendForFrontend.instanceName)]"
+          ],
+          "properties": {
+            "appsettingTest1": "appsettingTest1Value"
+          }
         }
-    ]
+      ]
+    },
+    {
+      "apiVersion": "2018-11-01",
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "name": "[variables('apis').conferences.instanceName]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+      ],
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "type": "config",
+          "dependsOn": [
+            "[concat('Microsoft.Web/Sites/', variables('apis').conferences.instanceName)]"
+          ],
+          "properties": {
+            "webSocketsEnabled": false,
+            "alwaysOn": true,
+            "requestTracingEnabled": true,
+            "httpLoggingEnabled": true,
+            "logsDirectorySizeLimit": 40,
+            "detailedErrorLoggingEnabled": true
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[concat('Microsoft.Web/Sites/', variables('apis').conferences.instanceName)]"
+          ],
+          "properties": {
+            "appsettingTest1": "appsettingTest1Value"
+          }
+        }
+      ]
+    },
+    {
+      "apiVersion": "2018-11-01",
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "name": "[variables('apis').speakers.instanceName]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+      ],
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "type": "config",
+          "dependsOn": [
+            "[concat('Microsoft.Web/Sites/', variables('apis').speakers.instanceName)]"
+          ],
+          "properties": {
+            "webSocketsEnabled": false,
+            "alwaysOn": true,
+            "requestTracingEnabled": true,
+            "httpLoggingEnabled": true,
+            "logsDirectorySizeLimit": 40,
+            "detailedErrorLoggingEnabled": true
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[concat('Microsoft.Web/Sites/', variables('apis').speakers.instanceName)]"
+          ],
+          "properties": {
+            "appsettingTest1": "appsettingTest1Value",
+            "Authentication:Authority": "[parameters('Authentication:Authority')]",
+            "Authentication:ClientId": "[parameters('Authentication:ClientId')]",
+            "Authentication:AppIdUri": "[parameters('Authentication:AppIdUri')]"
+          }
+        }
+      ]
+    }
+  ]
 }
