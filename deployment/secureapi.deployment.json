@@ -91,7 +91,9 @@
             "[concat('Microsoft.Web/Sites/', variables('apis').backendForFrontend.instanceName)]"
           ],
           "properties": {
-            "appsettingTest1": "appsettingTest1Value"
+            "ApplicationIdUri": "[parameters('ApplicationIdUri')]",
+            "SpeakerApiUri": "[parameters('SpeakerApiUri')]",
+            "ActiveDirectory:TenantId": "[subscription().tenantId]"
           }
         }
       ]
@@ -136,7 +138,6 @@
             "[concat('Microsoft.Web/Sites/', variables('apis').conferences.instanceName)]"
           ],
           "properties": {
-            "appsettingTest1": "appsettingTest1Value"
           }
         }
       ]
@@ -181,12 +182,9 @@
             "[concat('Microsoft.Web/Sites/', variables('apis').speakers.instanceName)]"
           ],
           "properties": {
-            "appsettingTest1": "appsettingTest1Value",
             "Authentication:Authority": "[parameters('Authentication:Authority')]",
             "Authentication:ClientId": "[parameters('Authentication:ClientId')]",
-            "Authentication:AppIdUri": "[parameters('Authentication:AppIdUri')]",
-            "ApplicationIdUri": "[parameters('ApplicationIdUri')]",
-            "SpeakerApiUri": "[parameters('SpeakerApiUri')]"
+            "Authentication:AppIdUri": "[parameters('Authentication:AppIdUri')]"
           }
         }
       ]
