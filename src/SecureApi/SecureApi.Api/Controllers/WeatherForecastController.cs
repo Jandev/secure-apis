@@ -43,13 +43,14 @@ namespace SecureApi.Api.Controllers
         [HttpGet]
         public async Task<ApiCallDetails> Get()
         {
-            const string applicationIdUri = "api://6d7649c2-de4f-4ce4-83f5-422d4f6c5fe0";
+            string applicationIdUri = _configuration["ApplicationIdUri"];
+            string speakerApiUri = _configuration["SpeakerApiUri"];
             var azureServiceTokenProvider = new AzureServiceTokenProvider();
             var tenantId = _configuration["ActiveDirectory:TenantId"];
             string accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(applicationIdUri, tenantId: tenantId);
             var httpClient = clientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            var response = await httpClient.GetAsync("https://janv-secureapi-speakers.azurewebsites.net/WeatherForecast");
+            var response = await httpClient.GetAsync(speakerApiUri);
             var body = await response.Content.ReadAsStringAsync();
 
             return new ApiCallDetails

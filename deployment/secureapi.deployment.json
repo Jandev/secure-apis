@@ -10,7 +10,13 @@
     },
     "Authentication:AppIdUri": {
       "type": "string"
-    } 
+    },
+    "ApplicationIdUri": {
+      "type": "string"
+    },
+    "SpeakerApiUri": {
+      "type": "string"
+    }
   },
   "variables": {
     "projectPrefix": "janv-secureapi",
@@ -178,7 +184,9 @@
             "appsettingTest1": "appsettingTest1Value",
             "Authentication:Authority": "[parameters('Authentication:Authority')]",
             "Authentication:ClientId": "[parameters('Authentication:ClientId')]",
-            "Authentication:AppIdUri": "[parameters('Authentication:AppIdUri')]"
+            "Authentication:AppIdUri": "[parameters('Authentication:AppIdUri')]",
+            "ApplicationIdUri": "[parameters('ApplicationIdUri')]",
+            "SpeakerApiUri": "[parameters('SpeakerApiUri')]"
           }
         }
       ]
