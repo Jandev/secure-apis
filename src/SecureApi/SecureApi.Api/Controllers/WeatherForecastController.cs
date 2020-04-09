@@ -37,6 +37,8 @@ namespace SecureApi.Api.Controllers
         {
             public string AccessToken { get; set; }
             public string Body { get; set; }
+            public int StatusCode { get; set; }
+            public string Reason { get; set; }
         }
         [HttpGet]
         public async Task<ApiCallDetails> Get()
@@ -53,7 +55,9 @@ namespace SecureApi.Api.Controllers
             return new ApiCallDetails
             {
                 AccessToken = accessToken,
-                Body = body
+                Body = body,
+                StatusCode = (int)response.StatusCode,
+                Reason = response.ReasonPhrase
             };
         }
     }
