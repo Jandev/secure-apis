@@ -34,7 +34,11 @@
       "conferences": {
         "instanceName": "[concat(variables('projectPrefix'), '-conferences')]"
       }
+    },
+    "applicationInsights": {
+      "instanceName":"[concat(variables('projectPrefix'), '-insights')]"
     }
+    
   },
   "resources": [
     {
@@ -64,7 +68,8 @@
         "type": "SystemAssigned"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+        "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
+        "[variables('applicationInsights').instanceName]"
       ],
       "resources": [
         {
@@ -93,7 +98,8 @@
           "properties": {
             "ApplicationIdUri": "[parameters('ApplicationIdUri')]",
             "SpeakerApiUri": "[parameters('SpeakerApiUri')]",
-            "ActiveDirectory:TenantId": "[subscription().tenantId]"
+            "ActiveDirectory:TenantId": "[subscription().tenantId]",
+            "ApplicationInsights:InstrumentationKey": "[reference(resourceId('microsoft.insights/components/', variables('applicationInsights').instanceName), '2015-05-01').InstrumentationKey]"
           }
         }
       ]
@@ -188,6 +194,19 @@
           }
         }
       ]
+    },
+    {
+      "name": "[variables('applicationInsights').instanceName]",
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2018-05-01-preview",
+      "location": "[resourceGroup().location]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web",
+        "RetentionInDays": 30,
+        "DisableIpMasking": false,
+        "ImmediatePurgeDataOn30Days": true
+      }
     }
   ]
 }
