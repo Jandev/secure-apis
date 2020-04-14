@@ -34,7 +34,10 @@ namespace SecureApi.Api
                     name: "SpeakerApiHealth",
                     failureStatus: HealthStatus.Unhealthy,
                     tags: new []{ "underlying-service" });
+
+            services.AddApplicationInsightsTelemetry();
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
