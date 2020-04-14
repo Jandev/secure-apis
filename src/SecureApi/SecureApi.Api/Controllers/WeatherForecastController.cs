@@ -20,17 +20,14 @@ namespace SecureApi.Api.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
         private readonly IHttpClientFactory clientFactory;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IConfiguration configuration;
 
         public WeatherForecastController(
             IHttpClientFactory clientFactory,
-            IConfiguration configuration,
-            ILogger<WeatherForecastController> logger)
+            IConfiguration configuration)
         {
             this.clientFactory = clientFactory;
-            _configuration = configuration;
-            _logger = logger;
+            this.configuration = configuration;
         }
 
         public class ApiCallDetails
@@ -43,13 +40,13 @@ namespace SecureApi.Api.Controllers
         [HttpGet]
         public async Task<ApiCallDetails> Get()
         {
-            string applicationIdUri = _configuration["ApplicationIdUri"];
-            string speakerApiUri = _configuration["SpeakerApiUri"];
+            string applicationIdUri = this.configuration["ApplicationIdUri"];
+            string speakerApiUri = this.configuration["SpeakerApiUri"];
             var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            var tenantId = _configuration["ActiveDirectory:TenantId"];
+            var tenantId = this.configuration["ActiveDirectory:TenantId"];
             string accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(applicationIdUri, tenantId: tenantId);
 
-            var httpClient = clientFactory.CreateClient();
+            var httpClient = this.clientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
             var response = await httpClient.GetAsync(speakerApiUri);
