@@ -27,15 +27,16 @@ namespace SecureApi.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
+
             services.AddControllers();
             services.AddHttpClient();
             services.AddHealthChecks()
                 .AddCheck<SpeakerService>(
                     name: "SpeakerApiHealth",
                     failureStatus: HealthStatus.Unhealthy,
-                    tags: new []{ "underlying-service" });
-
-            services.AddApplicationInsightsTelemetry();
+                    tags: new []{ "underlying-service" })
+                .AddApplicationInsightsPublisher(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
         }
 
 
