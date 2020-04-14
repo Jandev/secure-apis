@@ -36,7 +36,10 @@ namespace SecureApi.Api
                     name: "SpeakerApiHealth",
                     failureStatus: HealthStatus.Unhealthy,
                     tags: new []{ "underlying-service" })
-                .AddApplicationInsightsPublisher(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+                .AddApplicationInsightsPublisher(
+                    instrumentationKey: Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"], 
+                    saveDetailedReport: true,
+                    excludeHealthyReports: true);
         }
 
 
