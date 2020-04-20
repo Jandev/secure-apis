@@ -47,7 +47,7 @@ namespace SecureApi.Api.Infrastructure.Health
                     return HealthCheckResult.Healthy("Got expected response from Speaker Api.");
                 }
 
-                return HealthCheckResult.Unhealthy($"Got status code {response.StatusCode}.");
+                return HealthCheckResult.Unhealthy($"Got status code {response.StatusCode} with reason `{response.ReasonPhrase}`.");
             }
             catch (HttpRequestException httpRequestException)
             {
