@@ -40,8 +40,9 @@ namespace SecureApi.Api.Infrastructure.Health
             {
                 var response = await httpClient.GetAsync(speakerApiUri, cancellationToken);
                 logger.LogInformation($"Executed health check for {nameof(SpeakerService)}.");
-                if (response.StatusCode == HttpStatusCode.Unauthorized ||
-                    response.StatusCode == HttpStatusCode.Forbidden)
+                if ((response.StatusCode == HttpStatusCode.Unauthorized ||
+                    response.StatusCode == HttpStatusCode.Forbidden) &&
+                    !"Site Disabled".Equals(response.ReasonPhrase, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return HealthCheckResult.Healthy("Got expected response from Speaker Api.");
                 }
