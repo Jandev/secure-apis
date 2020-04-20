@@ -21,13 +21,16 @@ namespace SecureApi.Api.Controllers
         };
         private readonly IHttpClientFactory clientFactory;
         private readonly IConfiguration configuration;
+        private readonly ILogger<WeatherForecastController> logger;
 
         public WeatherForecastController(
             IHttpClientFactory clientFactory,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ILogger<WeatherForecastController> logger)
         {
             this.clientFactory = clientFactory;
             this.configuration = configuration;
+            this.logger = logger;
         }
 
         public class ApiCallDetails
@@ -40,6 +43,7 @@ namespace SecureApi.Api.Controllers
         [HttpGet]
         public async Task<ApiCallDetails> Get()
         {
+            this.logger.LogInformation($"Executing {nameof(Get)}.");
             string applicationIdUri = this.configuration["ApplicationIdUri"];
             string speakerApiUri = this.configuration["SpeakerApiUri"];
             var azureServiceTokenProvider = new AzureServiceTokenProvider();
@@ -51,6 +55,8 @@ namespace SecureApi.Api.Controllers
 
             var response = await httpClient.GetAsync(speakerApiUri);
             var body = await response.Content.ReadAsStringAsync();
+
+            this.logger.LogInformation($"Executed {nameof(Get)}.");
             return new ApiCallDetails
             {
                 AccessToken = accessToken,
