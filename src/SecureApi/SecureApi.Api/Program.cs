@@ -21,6 +21,10 @@ namespace SecureApi.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureLogging(l =>
+                    {
+                        l.AddApplicationInsights();
+                    });
                 });
     }
 }
