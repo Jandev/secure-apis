@@ -44,26 +44,47 @@ namespace SecureApi.Api.Controllers
         public async Task<ApiCallDetails> Get()
         {
             this.logger.LogInformation($"Executing {nameof(Get)}.");
-            string applicationIdUri = this.configuration["ApplicationIdUri"];
-            string speakerApiUri = this.configuration["SpeakerApiUri"];
-            var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            var tenantId = this.configuration["ActiveDirectory:TenantId"];
-            string accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(applicationIdUri, tenantId: tenantId);
 
+            var response = await InvokeSpeakerService();
+
+            this.logger.LogInformation($"Executed {nameof(Get)}.");
+            
+            return response;
+        }
+
+        private async Task<ApiCallDetails> InvokeSpeakerService()
+        {
+            string speakerApiUri = this.configuration["SpeakerApiUri"];
+
+            var accessToken = await GenerateAccessToken();
+            
             var httpClient = this.clientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
             var response = await httpClient.GetAsync(speakerApiUri);
             var body = await response.Content.ReadAsStringAsync();
 
-            this.logger.LogInformation($"Executed {nameof(Get)}.");
-            return new ApiCallDetails
+            var callDetails = new ApiCallDetails
             {
                 AccessToken = accessToken,
                 Body = body,
                 StatusCode = (int)response.StatusCode,
                 Reason = response.ReasonPhrase
             };
+
+            return callDetails;
+        }
+
+        private async Task<string> GenerateAccessToken()
+        {
+            string applicationIdUri = this.configuration["ApplicationIdUri"];
+            var tenantId = this.configuration["ActiveDirectory:TenantId"];
+
+            var azureServiceTokenProvider = new AzureServiceTokenProvider();
+            var accessToken = await azureServiceTokenProvider
+                                        .GetAccessTokenAsync(
+                                                    applicationIdUri, tenantId: 
+                                                    tenantId);
+            return accessToken;
         }
     }
 }
