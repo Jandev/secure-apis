@@ -13,20 +13,16 @@ namespace SecureApi.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class TestBackendController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
         private readonly IHttpClientFactory clientFactory;
         private readonly IConfiguration configuration;
-        private readonly ILogger<WeatherForecastController> logger;
+        private readonly ILogger<TestBackendController> logger;
 
-        public WeatherForecastController(
+        public TestBackendController(
             IHttpClientFactory clientFactory,
             IConfiguration configuration,
-            ILogger<WeatherForecastController> logger)
+            ILogger<TestBackendController> logger)
         {
             this.clientFactory = clientFactory;
             this.configuration = configuration;
@@ -40,6 +36,7 @@ namespace SecureApi.Api.Controllers
             public int StatusCode { get; set; }
             public string Reason { get; set; }
         }
+
         [HttpGet]
         public async Task<ApiCallDetails> Get()
         {
