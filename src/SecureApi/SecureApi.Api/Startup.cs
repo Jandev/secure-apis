@@ -40,9 +40,6 @@ namespace SecureApi.Api
                     instrumentationKey: Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"], 
                     saveDetailedReport: true,
                     excludeHealthyReports: true);
-
-            services.AddHostedService<WarmupService>();
-            services.AddSingleton<SpeakerService>();
         }
 
 
