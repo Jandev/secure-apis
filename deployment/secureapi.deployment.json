@@ -36,9 +36,9 @@
       }
     },
     "applicationInsights": {
-      "instanceName":"[concat(variables('projectPrefix'), '-insights')]"
+      "instanceName": "[concat(variables('projectPrefix'), '-insights')]"
     }
-    
+
   },
   "resources": [
     {
@@ -94,6 +94,64 @@
           "type": "config",
           "dependsOn": [
             "[concat('Microsoft.Web/Sites/', variables('apis').backendForFrontend.instanceName)]"
+          ],
+          "properties": {
+            "ApplicationIdUri": "[parameters('ApplicationIdUri')]",
+            "SpeakerApiUri": "[parameters('SpeakerApiUri')]",
+            "ActiveDirectory:TenantId": "[subscription().tenantId]",
+            "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('microsoft.insights/components/', variables('applicationInsights').instanceName), '2015-05-01').InstrumentationKey]",
+            "APPINSIGHTS_PROFILERFEATURE_VERSION": "1.0.0",
+            "APPLICATIONINSIGHTS_CONNECTION_STRING": "[concat('InstrumentationKey=', reference(resourceId('microsoft.insights/components/', variables('applicationInsights').instanceName), '2015-05-01').InstrumentationKey)]",
+            "ApplicationInsightsAgent_EXTENSION_VERSION": "~2",
+            "DiagnosticServices_EXTENSION_VERSION": "~3",
+            "InstrumentationEngine_EXTENSION_VERSION": "~1",
+            "SnapshotDebugger_EXTENSION_VERSION": "~1",
+            "XDT_MicrosoftApplicationInsights_BaseExtensions": "~1",
+            "XDT_MicrosoftApplicationInsights_Mode": "recommended",
+            "WEBSITE_SWAP_WARMUP_PING_PATH": "/api/Warmup",
+            "WEBSITE_SWAP_WARMUP_PING_STATUSES": "200"
+          }
+        }
+      ]
+    },
+    {
+      "name": "[concat(variables('apis').backendForFrontend.instanceName, '/Staging')]",
+      "type": "Microsoft.Web/sites/slots",
+      "apiVersion": "2019-08-01",
+      "dependsOn": [
+        "[concat('Microsoft.Web/Sites/', variables('apis').backendForFrontend.instanceName)]"
+      ],
+      "location": "[resourceGroup().location]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "enabled": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+      },
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/Slots', variables('apis').backendForFrontend.instanceName, 'Staging')]"
+          ],
+          "properties": {
+            "webSocketsEnabled": false,
+            "alwaysOn": true,
+            "requestTracingEnabled": true,
+            "httpLoggingEnabled": true,
+            "logsDirectorySizeLimit": 40,
+            "detailedErrorLoggingEnabled": true
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites/Slots', variables('apis').backendForFrontend.instanceName, 'Staging')]"
           ],
           "properties": {
             "ApplicationIdUri": "[parameters('ApplicationIdUri')]",
