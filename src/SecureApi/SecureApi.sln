@@ -19,12 +19,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployment", "Deployment", 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A11899D7-D9AF-491E-9FC7-8B9542F57281}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\build\azure-pipelines.yml = ..\..\build\azure-pipelines.yml
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureApi.Api", "SecureApi.Api\SecureApi.Api.csproj", "{0604CD5F-A314-4E18-ADCC-59864A0D1B15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecureApi.Api", "SecureApi.Api\SecureApi.Api.csproj", "{0604CD5F-A314-4E18-ADCC-59864A0D1B15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureApi.Speaker", "SecureApi.Speaker\SecureApi.Speaker.csproj", "{B9D89EDF-FCBA-47E2-B2FB-43C815C83D22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecureApi.Speaker", "SecureApi.Speaker\SecureApi.Speaker.csproj", "{B9D89EDF-FCBA-47E2-B2FB-43C815C83D22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureApi.Conferences", "SecureApi.Conferences\SecureApi.Conferences.csproj", "{621C07CE-2E65-4867-A194-802935CDC250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecureApi.Conferences", "SecureApi.Conferences\SecureApi.Conferences.csproj", "{621C07CE-2E65-4867-A194-802935CDC250}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
