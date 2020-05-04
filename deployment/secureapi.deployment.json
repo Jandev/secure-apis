@@ -130,22 +130,6 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
       },
       "resources": [
-        {
-          "apiVersion": "2015-08-01",
-          "name": "web",
-          "type": "config",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites/Slots', variables('apis').backendForFrontend.instanceName, 'Staging')]"
-          ],
-          "properties": {
-            "webSocketsEnabled": false,
-            "alwaysOn": true,
-            "requestTracingEnabled": true,
-            "httpLoggingEnabled": true,
-            "logsDirectorySizeLimit": 40,
-            "detailedErrorLoggingEnabled": true
-          }
-        }
       ]
     },
     {
