@@ -20,7 +20,7 @@ namespace SecureApi.Api.Controllers
         {
             this.logger.LogInformation($"Executing {nameof(WarmupController)}.{nameof(Get)}");
 
-            await Task.Delay(5000);
+            //await Task.Delay(5000);
 
             this.logger.LogInformation($"Executed {nameof(WarmupController)}.{nameof(Get)}");
             return Ok();
