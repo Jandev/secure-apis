@@ -49,6 +49,18 @@ namespace SecureApi.Api.Controllers
             return response;
         }
 
+        [HttpGet("conferences")]
+        public async Task<ApiCallDetails> GetConferences()
+        {
+            this.logger.LogInformation($"Executing {nameof(GetConferences)}.");
+
+            var response = await InvokeConferencesService();
+
+            this.logger.LogInformation($"Executed {nameof(GetConferences)}.");
+
+            return response;
+        }
+
         private async Task<ApiCallDetails> InvokeSpeakerService()
         {
             string speakerApiUri = this.configuration["SpeakerApiUri"];
@@ -82,6 +94,24 @@ namespace SecureApi.Api.Controllers
                                                     applicationIdUri, tenantId: 
                                                     tenantId);
             return accessToken;
+        }
+
+        private async Task<ApiCallDetails> InvokeConferencesService()
+        {
+            string speakerApiUri = this.configuration["ConferencesApiUri"];
+
+            var httpClient = this.clientFactory.CreateClient();
+            var response = await httpClient.GetAsync(speakerApiUri);
+            var body = await response.Content.ReadAsStringAsync();
+
+            var callDetails = new ApiCallDetails
+            {
+                Body = body,
+                StatusCode = (int)response.StatusCode,
+                Reason = response.ReasonPhrase
+            };
+
+            return callDetails;
         }
     }
 }
