@@ -107,9 +107,7 @@
             "InstrumentationEngine_EXTENSION_VERSION": "~1",
             "SnapshotDebugger_EXTENSION_VERSION": "~1",
             "XDT_MicrosoftApplicationInsights_BaseExtensions": "~1",
-            "XDT_MicrosoftApplicationInsights_Mode": "recommended",
-            "WEBSITE_SWAP_WARMUP_PING_PATH": "/api/Warmup",
-            "WEBSITE_SWAP_WARMUP_PING_STATUSES": "200"
+            "XDT_MicrosoftApplicationInsights_Mode": "recommended"
           }
         }
       ]
