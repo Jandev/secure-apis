@@ -16,6 +16,9 @@
     },
     "SpeakerApiUri": {
       "type": "string"
+    },
+    "ConferencesApiUri": {
+      "type": "string"
     }
   },
   "variables": {
@@ -98,6 +101,7 @@
           "properties": {
             "ApplicationIdUri": "[parameters('ApplicationIdUri')]",
             "SpeakerApiUri": "[parameters('SpeakerApiUri')]",
+            "ConferencesApiUri": "[parameters('ConferencesApiUri')]",
             "ActiveDirectory:TenantId": "[subscription().tenantId]",
             "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('microsoft.insights/components/', variables('applicationInsights').instanceName), '2015-05-01').InstrumentationKey]",
             "APPINSIGHTS_PROFILERFEATURE_VERSION": "1.0.0",

@@ -16,6 +16,9 @@
     },
     "SpeakerApiUri": {
       "value": ""
-    }
+    },
+    "ConferencesApiUri": {
+      "value": ""
+    } 
   }
 }
