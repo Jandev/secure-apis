@@ -46,22 +46,22 @@
       "addressPrefixes": [
         "10.1.0.0/16"
       ],
-      "subnets": [
-          {
-              "name": "[concat(variables('projectPrefix'), '-app-subnet')]",
-              "properties": {
-                  "addressPrefix": "10.1.1.0/24",
-                  "serviceEndpoints": [
-                    {
-                        "service": "Microsoft.Web",
-                        "locations": [
-                            "*"
-                        ]
-                    }
-                ]
-              }
+      "subnets": {
+        "appSubnet": {
+          "instanceName": "[concat(variables('projectPrefix'), '-app-subnet')]",
+          "properties": {
+              "addressPrefix": "10.1.1.0/24",
+              "serviceEndpoints": [
+                {
+                  "service": "Microsoft.Web",
+                  "locations": [
+                    "*"
+                  ]
+                }
+            ]
           }
-      ]
+        }
+      }
     }
 
   },
@@ -98,7 +98,7 @@
       ],
       "resources": [
         {
-          "apiVersion": "2015-08-01",
+          "apiVersion": "2018-02-01",
           "name": "web",
           "type": "config",
           "dependsOn": [
@@ -114,7 +114,7 @@
           }
         },
         {
-          "apiVersion": "2015-08-01",
+          "apiVersion": "2018-02-01",
           "name": "appsettings",
           "type": "config",
           "dependsOn": [
@@ -173,11 +173,12 @@
       ],
       "resources": [
         {
-          "apiVersion": "2015-08-01",
+          "apiVersion": "2018-02-01",
           "name": "web",
           "type": "config",
           "dependsOn": [
-            "[concat('Microsoft.Web/Sites/', variables('apis').conferences.instanceName)]"
+            "[concat('Microsoft.Web/Sites/', variables('apis').conferences.instanceName)]",
+            "[concat('Microsoft.Network/virtualNetworks/', variables('backendVirtualNetwork').instanceName)]"
           ],
           "properties": {
             "webSocketsEnabled": false,
@@ -185,11 +186,37 @@
             "requestTracingEnabled": true,
             "httpLoggingEnabled": true,
             "logsDirectorySizeLimit": 40,
-            "detailedErrorLoggingEnabled": true
+            "detailedErrorLoggingEnabled": true,
+            "ipSecurityRestrictions": [
+              {
+                  "vnetSubnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('backendVirtualNetwork').instanceName, variables('backendVirtualNetwork').subnets.appSubnet.instanceName)]",
+                  "action": "Allow",
+                  "tag": "Default",
+                  "priority": 100,
+                  "name": "backend-services"
+              },
+              {
+                  "ipAddress": "Any",
+                  "action": "Deny",
+                  "priority": 2147483647,
+                  "name": "Deny all",
+                  "description": "Deny all access"
+              }
+              ],
+              "scmIpSecurityRestrictions": [
+              {
+                  "ipAddress": "Any",
+                  "action": "Allow",
+                  "priority": 1,
+                  "name": "Allow all",
+                  "description": "Allow all access"
+              }
+            ],
+            "scmIpSecurityRestrictionsUseMain": false
           }
         },
         {
-          "apiVersion": "2015-08-01",
+          "apiVersion": "2018-02-01",
           "name": "appsettings",
           "type": "config",
           "dependsOn": [
@@ -217,7 +244,7 @@
       ],
       "resources": [
         {
-          "apiVersion": "2015-08-01",
+          "apiVersion": "2018-02-01",
           "name": "web",
           "type": "config",
           "dependsOn": [
@@ -233,7 +260,7 @@
           }
         },
         {
-          "apiVersion": "2015-08-01",
+          "apiVersion": "2018-02-01",
           "name": "appsettings",
           "type": "config",
           "dependsOn": [
@@ -270,7 +297,12 @@
           "addressSpace": {
             "addressPrefixes": "[variables('backendVirtualNetwork').addressPrefixes]"
           },
-          "subnets": "[variables('backendVirtualNetwork').subnets]"
+          "subnets": [
+            {
+              "name": "[variables('backendVirtualNetwork').subnets.appSubnet.instanceName]",
+              "properties": "[variables('backendVirtualNetwork').subnets.appSubnet.properties]"
+            }
+          ]
       }
   }
   ]
