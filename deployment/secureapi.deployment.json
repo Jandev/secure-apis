@@ -157,6 +157,19 @@
       ]
     },
     {
+      "type": "Microsoft.Web/sites/virtualNetworkConnections",
+      "apiVersion": "2018-11-01",
+      "name": "[concat(variables('apis').backendForFrontend.instanceName,'/',variables('backendVirtualNetwork').instanceName)]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('apis').backendForFrontend.instanceName)]",
+        "[resourceId('Microsoft.Network/virtualNetworks/', variables('backendVirtualNetwork').instanceName)]"
+      ],
+      "properties": {
+        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/', variables('backendVirtualNetwork').instanceName)]"
+      }
+    },
+    {
       "apiVersion": "2018-11-01",
       "type": "Microsoft.Web/sites",
       "kind": "app",
@@ -177,8 +190,8 @@
           "name": "web",
           "type": "config",
           "dependsOn": [
-            "[concat('Microsoft.Web/Sites/', variables('apis').conferences.instanceName)]",
-            "[concat('Microsoft.Network/virtualNetworks/', variables('backendVirtualNetwork').instanceName)]"
+            "[resourceId('Microsoft.Web/Sites/', variables('apis').conferences.instanceName)]",
+            "[resourceId('Microsoft.Network/virtualNetworks/', variables('backendVirtualNetwork').instanceName)]"
           ],
           "properties": {
             "webSocketsEnabled": false,
