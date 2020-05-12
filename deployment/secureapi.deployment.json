@@ -40,6 +40,28 @@
     },
     "applicationInsights": {
       "instanceName": "[concat(variables('projectPrefix'), '-insights')]"
+    },
+    "backendVirtualNetwork": {
+      "instanceName": "[concat(variables('projectPrefix'), '-backend-network')]",
+      "addressPrefixes": [
+        "10.1.0.0/16"
+      ],
+      "subnets": [
+          {
+              "name": "[concat(variables('projectPrefix'), '-app-subnet')]",
+              "properties": {
+                  "addressPrefix": "10.1.1.0/24",
+                  "serviceEndpoints": [
+                    {
+                        "service": "Microsoft.Web",
+                        "locations": [
+                            "*"
+                        ]
+                    }
+                ]
+              }
+          }
+      ]
     }
 
   },
@@ -237,6 +259,19 @@
         "DisableIpMasking": false,
         "ImmediatePurgeDataOn30Days": true
       }
-    }
+    },
+    {
+      "name": "[variables('backendVirtualNetwork').instanceName]",
+      "type": "Microsoft.Network/VirtualNetworks",
+      "apiVersion": "2019-09-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [],
+      "properties": {
+          "addressSpace": {
+            "addressPrefixes": "[variables('backendVirtualNetwork').addressPrefixes]"
+          },
+          "subnets": "[variables('backendVirtualNetwork').subnets]"
+      }
+  }
   ]
 }
