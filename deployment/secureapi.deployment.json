@@ -50,14 +50,22 @@
         "appSubnet": {
           "instanceName": "[concat(variables('projectPrefix'), '-app-subnet')]",
           "properties": {
-              "addressPrefix": "10.1.1.0/24",
-              "serviceEndpoints": [
-                {
-                  "service": "Microsoft.Web",
-                  "locations": [
-                    "*"
-                  ]
-                }
+            "addressPrefix": "10.1.1.0/24",
+            "serviceEndpoints": [
+              {
+                "service": "Microsoft.Web",
+                "locations": [
+                  "*"
+                ]
+              }
+            ],
+            "delegations": [
+              {
+                "properties": {
+                  "serviceName": "Microsoft.Web/serverFarms"
+                },
+                "name": "webapp"
+              }
             ]
           }
         }
@@ -157,16 +165,18 @@
       ]
     },
     {
-      "type": "Microsoft.Web/sites/virtualNetworkConnections",
-      "apiVersion": "2018-11-01",
-      "name": "[concat(variables('apis').backendForFrontend.instanceName,'/',variables('backendVirtualNetwork').instanceName)]",
+      "name": "[concat(variables('apis').backendForFrontend.instanceName, '/virtualNetwork')]",
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2018-02-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('apis').backendForFrontend.instanceName)]",
         "[resourceId('Microsoft.Network/virtualNetworks/', variables('backendVirtualNetwork').instanceName)]"
       ],
-      "properties": {
-        "vnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/', variables('backendVirtualNetwork').instanceName)]"
+      "properties":
+      {
+        "subnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('backendVirtualNetwork').instanceName, variables('backendVirtualNetwork').subnets.appSubnet.instanceName)]",
+        "swiftSupported": true
       }
     },
     {
@@ -303,7 +313,7 @@
     {
       "name": "[variables('backendVirtualNetwork').instanceName]",
       "type": "Microsoft.Network/VirtualNetworks",
-      "apiVersion": "2019-09-01",
+      "apiVersion": "2020-04-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [],
       "properties": {
