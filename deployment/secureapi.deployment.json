@@ -38,6 +38,11 @@
         "instanceName": "[concat(variables('projectPrefix'), '-conferences')]"
       }
     },
+    "worker": {
+      "speakers": {
+        "instanceName": "[concat(variables('projectPrefix'), '-speakers-worker')]"
+      }
+    },
     "applicationInsights": {
       "instanceName": "[concat(variables('projectPrefix'), '-insights')]"
     },
@@ -45,8 +50,12 @@
       "internal": {
         "instanceName": "jvscrapiinternalstrge",
         "queues": {
-          "speakerApiEvents": "speaker-api-events"
+          "speakerApiEvents": "speaker-api-events",
+          "speakerCommands": "speaker-commands"
         }
+      },
+      "speakerWorker": {
+        "instanceName": "jvworkerstrge"
       }
     },
     "eventgrid": {
@@ -157,7 +166,9 @@
             "InstrumentationEngine_EXTENSION_VERSION": "~1",
             "SnapshotDebugger_EXTENSION_VERSION": "~1",
             "XDT_MicrosoftApplicationInsights_BaseExtensions": "~1",
-            "XDT_MicrosoftApplicationInsights_Mode": "recommended"
+            "XDT_MicrosoftApplicationInsights_Mode": "recommended",
+            "Speakers:CommandQueueName": "[variables('storage').internal.queues.speakerCommands]",
+            "Speakers:StorageAccount": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storage').internal.instanceName,';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').internal.instanceName), '2015-05-01-preview').key1,';')]"
           }
         }
       ]
@@ -314,6 +325,45 @@
       ]
     },
     {
+      "apiVersion": "2015-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[variables('worker').speakers.instanceName]",
+      "location": "[resourceGroup().location]",
+      "kind": "functionapp",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storage').speakerWorker.instanceName)]"
+      ],
+      "properties": {
+        "name": "[variables('worker').speakers.instanceName]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
+        "hostingEnvironment": "",
+        "clientAffinityEnabled": false,
+        "siteConfig": {
+          "alwaysOn": true
+        }
+      },
+      "resources": [
+        {
+          "apiVersion": "2016-03-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('worker').speakers.instanceName)]",
+            "[resourceId('Microsoft.Storage/storageAccounts/', variables('storage').speakerWorker.instanceName)]"
+          ],
+          "properties": {
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storage').speakerWorker.instanceName,';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').speakerWorker.instanceName), '2015-05-01-preview').key1,';')]",
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storage').speakerWorker.instanceName,';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').speakerWorker.instanceName), '2015-05-01-preview').key1,';')]",
+            "FUNCTIONS_EXTENSION_VERSION": "~3",
+            "Speakers:CommandQueueName": "[variables('storage').internal.queues.speakerCommands]",
+            "Speakers:StorageAccount": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storage').internal.instanceName,';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').internal.instanceName), '2015-05-01-preview').key1,';')]",
+            "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('microsoft.insights/components/', variables('applicationInsights').instanceName), '2015-05-01').InstrumentationKey]"
+          }
+        }
+      ]
+    },
+    {
       "name": "[variables('applicationInsights').instanceName]",
       "type": "Microsoft.Insights/components",
       "apiVersion": "2018-05-01-preview",
@@ -355,10 +405,38 @@
       }
     },
     {
+      "name": "[variables('storage').speakerWorker.instanceName]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2019-04-01",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "Standard_LRS"
+      }
+    },
+    {
       "name": "[variables('eventgrid').topic.instanceName]",
       "type": "Microsoft.EventGrid/topics",
       "location": "[resourceGroup().location]",
       "apiVersion": "2018-01-01"
+    },
+    {
+      "name": "[concat(variables('eventgrid').topic.instanceName, '/Microsoft.EventGrid/', variables('eventgrid').subscription.speaker.instanceName)]",
+      "type": "Microsoft.EventGrid/topics/providers/eventSubscriptions",
+      "apiVersion": "2019-06-01",
+      "properties": {
+          "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                  "resourceId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storage').internal.instanceName)]",
+                  "queueName": "[variables('eventgrid').subscription.speaker.subscriptionQueueName]"
+              }
+          },
+          "filter": "",
+          "labels": [
+          ],
+          "eventDeliverySchema": "EventGridSchema"
+      }
     }
   ]
 }
