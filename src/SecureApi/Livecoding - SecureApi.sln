@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Worker", "Worker", "{BA69BA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureApi.Speaker.Worker", "SecureApi.Speaker.Worker\SecureApi.Speaker.Worker.csproj", "{6BF6D6E8-CE0D-4B12-AC16-E90E14851947}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureApi.Domain.Contracts", "SecureApi.Contracts\SecureApi.Domain.Contracts.csproj", "{1AE44326-3BD6-45EA-B1F0-5ECE60B51B5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{6BF6D6E8-CE0D-4B12-AC16-E90E14851947}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BF6D6E8-CE0D-4B12-AC16-E90E14851947}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BF6D6E8-CE0D-4B12-AC16-E90E14851947}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AE44326-3BD6-45EA-B1F0-5ECE60B51B5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AE44326-3BD6-45EA-B1F0-5ECE60B51B5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AE44326-3BD6-45EA-B1F0-5ECE60B51B5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AE44326-3BD6-45EA-B1F0-5ECE60B51B5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
