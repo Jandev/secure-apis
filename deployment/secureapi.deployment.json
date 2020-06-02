@@ -43,7 +43,7 @@
     },
     "storage": {
       "internal": {
-        "instanceName": "janvsecureapiinternalstorage",
+        "instanceName": "jvscrapiinternalstrge",
         "queues": {
           "speakerApiEvents": "speaker-api-events"
         }
