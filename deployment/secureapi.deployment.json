@@ -355,7 +355,7 @@
       }
     },
     {
-      "name": "[variables('eventgrid').topic]",
+      "name": "[variables('eventgrid').topic.instanceName]",
       "type": "Microsoft.EventGrid/topics",
       "location": "[resourceGroup().location]",
       "apiVersion": "2018-01-01"
