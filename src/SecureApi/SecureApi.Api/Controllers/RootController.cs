@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace SecureApi.Api.Controllers
 {
@@ -16,7 +15,7 @@ namespace SecureApi.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
             this.logger.LogInformation($"Executing {nameof(RootController)}.{nameof(Get)}");
 

@@ -3,22 +3,22 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Authentication:Authority": {
-      "value": ""
+      "value": "https://login.microsoftonline.com/b1f8cb55-7d7a-4e8d-9641-51372b423350"
     },
     "Authentication:ClientId": {
-      "value": ""
+      "value": "6d7649c2-de4f-4ce4-83f5-422d4f6c5fe0"
     },
     "Authentication:AppIdUri": {
-      "value": ""
+      "value": "api://6d7649c2-de4f-4ce4-83f5-422d4f6c5fe0"
     },
     "ApplicationIdUri": {
-      "value": ""
+      "value": "api://6d7649c2-de4f-4ce4-83f5-422d4f6c5fe0"
     },
     "SpeakerApiUri": {
-      "value": ""
+      "value": "https://janv-secureapi-speakers.azurewebsites.net/Speakers"
     },
     "ConferencesApiUri": {
-      "value": ""
+      "value": "https://janv-secureapi-conferences.azurewebsites.net/BigConferences"
     } 
   }
 }
