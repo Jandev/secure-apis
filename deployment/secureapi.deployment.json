@@ -41,6 +41,25 @@
     "applicationInsights": {
       "instanceName": "[concat(variables('projectPrefix'), '-insights')]"
     },
+    "storage": {
+      "internal": {
+        "instanceName": "janvsecureapiinternalstorage",
+        "queues": {
+          "speakerApiEvents": "speaker-api-events"
+        }
+      }
+    },
+    "eventgrid": {
+      "topic": {
+        "instanceName": "api-events"
+      },
+      "subscription": {
+        "speaker": {
+          "instanceName": "speaker-api-events",
+          "subscriptionQueueName": "[variables('storage').internal.queues.speakerApiEvents]"
+        }
+      }
+    },
     "backendVirtualNetwork": {
       "instanceName": "[concat(variables('projectPrefix'), '-backend-network')]",
       "addressPrefixes": [
@@ -96,9 +115,6 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
-      },
-      "identity": {
-        "type": "SystemAssigned"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
@@ -327,6 +343,22 @@
             }
           ]
       }
-  }
+    },
+    {
+      "name": "[variables('storage').internal.instanceName]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2019-04-01",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "Standard_LRS"
+      }
+    },
+    {
+      "name": "[variables('eventgrid').topic]",
+      "type": "Microsoft.EventGrid/topics",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2018-01-01"
+    }
   ]
 }
