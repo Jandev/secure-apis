@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using Microsoft.AspNetCore.Http;
@@ -24,7 +25,7 @@ namespace SecureApi.Api.Controllers
             this.configuration = configuration;
         }
         [HttpPost]
-        public async Task<IActionResult> Add(SpeakerInformation speakerInformation)
+        public async Task<IActionResult> Add(SpeakerInformation speakerInformation, CancellationToken cancellationToken)
         {
             var command = new AddSpeaker
             {
@@ -35,21 +36,31 @@ namespace SecureApi.Api.Controllers
             };
 
             // Send the command to the queue
-            await SendToQueue(command);
+            await SendToQueue(command, cancellationToken);
 
             return Accepted(command.Id);
         }
 
-        private async Task SendToQueue(AddSpeaker command)
+        private async Task SendToQueue(AddSpeaker command, CancellationToken cancellationToken)
         {
             // Get the connection string from app settings
             string connectionString = this.configuration["Speakers:StorageAccount"];
             string queueName = this.configuration["Speakers:CommandQueueName"];
 
-            // Instantiate a QueueClient which will be used to create and manipulate the queue
+            var serializedCommand = JsonSerializer.Serialize(command);
+            
             var queueClient = new QueueClient(connectionString, queueName);
+            
+            if (await queueClient.ExistsAsync(cancellationToken))
+            {
+                await queueClient.SendMessageAsync(Base64Encode(serializedCommand), cancellationToken);
+            }
+        }
 
-            await queueClient.SendMessageAsync(JsonSerializer.Serialize(command));
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
         }
     }
 
