@@ -53,10 +53,16 @@ namespace SecureApi.Api.Controllers
             
             if (await queueClient.ExistsAsync(cancellationToken))
             {
-                await queueClient.SendMessageAsync(Base64Encode(serializedCommand), cancellationToken);
+                await queueClient.SendMessageAsync(
+                    Base64Encode(serializedCommand), 
+                    cancellationToken);
             }
         }
 
+        /// <remarks>
+        /// Need base64 encoded messages in the latest package:
+        /// https://github.com/Azure/azure-sdk-for-net/issues/10242
+        /// </remarks>>
         private static string Base64Encode(string plainText)
         {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
