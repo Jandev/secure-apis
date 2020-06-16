@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using SecureApi.Domain.Contracts.Commands;
-using SecureApi.Speaker.Model;
+using SecureApi.Domain.Contracts.Model;
 
 namespace SecureApi.Api.Controllers
 {

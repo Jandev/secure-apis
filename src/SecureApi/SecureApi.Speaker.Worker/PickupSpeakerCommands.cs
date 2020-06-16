@@ -36,14 +36,14 @@ namespace SecureApi.Speaker.Worker
             var myTestEvent = new Event
             {
                 EventType = "SecureApi.Speaker.SpeakerAdded",
-                Subject = "SpeakerAdded",
-                Data = new
+                Subject = "New Speaker",
+                Data = new SpeakerAdded
                 {
-                    deserializedCommand.Id,
-                    deserializedCommand.FirstName,
-                    deserializedCommand.LastName
+                    Id = deserializedCommand.Id,
+                    FirstName = deserializedCommand.FirstName,
+                    LastName = deserializedCommand.LastName
                 },
-                DataVersion = "0.1"
+                DataVersion = "1.0"
             };
 
             // Add the event to the IAsyncCollector<T> in order to get your event published.

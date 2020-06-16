@@ -1,5 +1,5 @@
 ﻿using System;
-using SecureApi.Speaker.Model;
+using SecureApi.Domain.Contracts.Model;
 
 namespace SecureApi.Domain.Contracts.Commands
 {

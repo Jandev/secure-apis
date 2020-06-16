@@ -1,4 +1,4 @@
-﻿namespace SecureApi.Speaker.Model
+﻿namespace SecureApi.Domain.Contracts.Model
 {
     public class Speaker
     {
