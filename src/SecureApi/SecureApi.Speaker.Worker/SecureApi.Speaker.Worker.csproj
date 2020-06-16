@@ -4,8 +4,12 @@
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="AzureFunctions.EventGridBinding" Version="0.1.0.136" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.1" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SecureApi.Contracts\SecureApi.Domain.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
