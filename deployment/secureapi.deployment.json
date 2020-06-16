@@ -41,6 +41,9 @@
     "worker": {
       "speakers": {
         "instanceName": "[concat(variables('projectPrefix'), '-speakers-worker')]"
+      },
+      "api": {
+        "instanceName": "[concat(variables('projectPrefix'), '-api-worker')]"
       }
     },
     "applicationInsights": {
@@ -55,7 +58,10 @@
         }
       },
       "speakerWorker": {
-        "instanceName": "jvworkerstrge"
+        "instanceName": "jvspkrworkerstrge"
+      },
+      "apiWorker": {
+        "instanceName": "jvapiworkerstrge"
       }
     },
     "eventgrid": {
@@ -350,7 +356,7 @@
           "type": "config",
           "dependsOn": [
             "[resourceId('Microsoft.Web/sites', variables('worker').speakers.instanceName)]",
-            "[resourceId('Microsoft.Storage/storageAccounts/', variables('storage').speakerWorker.instanceName)]"
+            "[resourceId('Microsoft.Storage/storageAccounts/', variables('storage').apiWorker.instanceName)]"
           ],
           "properties": {
             "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storage').speakerWorker.instanceName,';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').speakerWorker.instanceName), '2015-05-01-preview').key1,';')]",
@@ -358,6 +364,47 @@
             "FUNCTIONS_EXTENSION_VERSION": "~3",
             "Speakers:CommandQueueName": "[variables('storage').internal.queues.speakerCommands]",
             "Speakers:StorageAccount": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storage').internal.instanceName,';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').internal.instanceName), '2015-05-01-preview').key1,';')]",
+            "EventGridBindingSampleTopicEndpoint": "",
+            "EventGridBindingSampleTopicKey": "",
+            "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('microsoft.insights/components/', variables('applicationInsights').instanceName), '2015-05-01').InstrumentationKey]"
+          }
+        }
+      ]
+    },
+    {
+      "apiVersion": "2015-04-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[variables('worker').api.instanceName]",
+      "location": "[resourceGroup().location]",
+      "kind": "functionapp",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storage').speakerWorker.instanceName)]"
+      ],
+      "properties": {
+        "name": "[variables('worker').speakers.instanceName]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
+        "hostingEnvironment": "",
+        "clientAffinityEnabled": false,
+        "siteConfig": {
+          "alwaysOn": true
+        }
+      },
+      "resources": [
+        {
+          "apiVersion": "2016-03-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('worker').api.instanceName)]",
+            "[resourceId('Microsoft.Storage/storageAccounts/', variables('storage').apiWorker.instanceName)]"
+          ],
+          "properties": {
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storage').apiWorker.instanceName,';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').apiWorker.instanceName), '2015-05-01-preview').key1,';')]",
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storage').apiWorker.instanceName,';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').apiWorker.instanceName), '2015-05-01-preview').key1,';')]",
+            "FUNCTIONS_EXTENSION_VERSION": "~3",
+            "Events:EventQueueName": "[variables('storage').internal.queues.speakerApiEvents]",
+            "Events:StorageAccount": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storage').internal.instanceName,';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').internal.instanceName), '2015-05-01-preview').key1,';')]",
             "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('microsoft.insights/components/', variables('applicationInsights').instanceName), '2015-05-01').InstrumentationKey]"
           }
         }
@@ -406,6 +453,16 @@
     },
     {
       "name": "[variables('storage').speakerWorker.instanceName]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2019-04-01",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "Standard_LRS"
+      }
+    },
+    {
+      "name": "[variables('storage').apiWorker.instanceName]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
       "apiVersion": "2019-04-01",
