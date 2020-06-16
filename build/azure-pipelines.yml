@@ -16,6 +16,8 @@ variables:
   apiProject: '**\SecureApi\SecureApi.Api\SecureApi.Api.csproj'
   conferencesProject: '**\SecureApi\SecureApi.Conferences\SecureApi.Conferences.csproj'
   speakerProject: '**\SecureApi\SecureApi.Speaker\SecureApi.Speaker.csproj'
+  apiWorkerProject: '**\SecureApi\SecureApi.Api.Worker\SecureApi.Api.Worker.csproj'
+  speakerWorkerProject: '**\SecureApi\SecureApi.Speaker.Worker\SecureApi.Speaker.Worker.csproj'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -41,6 +43,18 @@ steps:
     command: 'build'
     projects: '$(speakerProject)'
     arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Speaker\SpeakerAPI.zip"'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '$(apiWorkerProject)'
+    arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Speaker\ApiWorker.zip"'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '$(speakerWorkerProject)'
+    arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Speaker\SpeakerWorker.zip"'
 
 - task: VSTest@2
   inputs:
