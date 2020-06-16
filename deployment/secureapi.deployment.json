@@ -364,8 +364,8 @@
             "FUNCTIONS_EXTENSION_VERSION": "~3",
             "Speakers:CommandQueueName": "[variables('storage').internal.queues.speakerCommands]",
             "Speakers:StorageAccount": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storage').internal.instanceName,';AccountKey=',listkeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').internal.instanceName), '2015-05-01-preview').key1,';')]",
-            "EventGridBindingSampleTopicEndpoint": "",
-            "EventGridBindingSampleTopicKey": "",
+            "EventGridBindingSampleTopicEndpoint": "[reference(variables('eventgrid').topic.instanceName).endpoint]",
+            "EventGridBindingSampleTopicKey": "[listKeys(resourceId('Microsoft.EventGrid/topics', variables('eventgrid').topic.instanceName), '2017-06-15-preview').key1]",
             "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('microsoft.insights/components/', variables('applicationInsights').instanceName), '2015-05-01').InstrumentationKey]"
           }
         }
