@@ -382,7 +382,7 @@
         "[resourceId('Microsoft.Storage/storageAccounts/', variables('storage').speakerWorker.instanceName)]"
       ],
       "properties": {
-        "name": "[variables('worker').speakers.instanceName]",
+        "name": "[variables('worker').api.instanceName]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
         "hostingEnvironment": "",
         "clientAffinityEnabled": false,
