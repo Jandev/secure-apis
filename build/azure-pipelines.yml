@@ -48,13 +48,15 @@ steps:
   inputs:
     command: 'publish'
     projects: '$(apiWorkerProject)'
-    arguments: '-o "$(build.artifactStagingDirectory)\ApiWorker\"'
+    arguments: '-o "$(Build.BinariesDirectory)\ApiWorker\"'
+
+
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
     projects: '$(speakerWorkerProject)'
-    arguments: '-o "$(build.artifactStagingDirectory)\SpeakerWorker\"'
+    arguments: '-o "$(Build.BinariesDirectory)\SpeakerWorker\"'
 
 - task: VSTest@2
   inputs:
