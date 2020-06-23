@@ -54,7 +54,7 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: '$(apiWorkerProject)'
-    arguments: '-o workers'
+    arguments: '-o $(build.artifactStagingDirectory)\workers'
     modifyOutputPath: true
     zipAfterPublish: true
 
