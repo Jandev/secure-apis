@@ -47,22 +47,18 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
+    publishWebProjects: false
     projects: '$(apiWorkerProject)'
     arguments: '-o "$(Build.BinariesDirectory)\ApiWorker\"'
-
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(Build.BinariesDirectory)\ApiWorker'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/ApiWorker.zip'
-    replaceExistingArchive: true
+    modifyOutputPath: false
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
+    publishWebProjects: false
     projects: '$(speakerWorkerProject)'
     arguments: '-o "$(Build.BinariesDirectory)\SpeakerWorker\"'
+    modifyOutputPath: false
 
 - task: ArchiveFiles@2
   inputs:
