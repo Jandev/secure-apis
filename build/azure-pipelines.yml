@@ -46,15 +46,15 @@ steps:
 
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'build'
+    command: 'publish'
     projects: '$(apiWorkerProject)'
-    arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Worker\ApiWorker.zip"'
+    arguments: '-o "$(build.artifactStagingDirectory)\ApiWorker\"'
 
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'build'
+    command: 'publish'
     projects: '$(speakerWorkerProject)'
-    arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Worker\SpeakerWorker.zip"'
+    arguments: '-o "$(build.artifactStagingDirectory)\SpeakerWorker\"'
 
 - task: VSTest@2
   inputs:
