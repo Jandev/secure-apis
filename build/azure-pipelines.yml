@@ -64,7 +64,7 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: '$(speakerWorkerProject)'
-    arguments: '-o workers'
+    arguments: '-o $(build.artifactStagingDirectory)\workers'
     modifyOutputPath: true
     zipAfterPublish: true
 
