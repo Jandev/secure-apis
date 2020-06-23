@@ -23,57 +23,59 @@ steps:
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
+  displayName: "Restore NuGet dependencies"
   inputs:
     restoreSolution: '$(solution)'
 
 - task: DotNetCoreCLI@2
+  displayName: "Building and publishing API"
   inputs:
     command: 'build'
     projects: '$(apiProject)'
     arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Api\SecureApi.zip"'
 
 - task: DotNetCoreCLI@2
+  displayName: "Building and publishing Conferences API"
   inputs:
     command: 'build'
     projects: '$(conferencesProject)'
     arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Conferences\ConferencesAPI.zip"'
 
 - task: DotNetCoreCLI@2
+  displayName: "Building and publishing Speaker API"
   inputs:
     command: 'build'
     projects: '$(speakerProject)'
     arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Speaker\SpeakerAPI.zip"'
 
 - task: DotNetCoreCLI@2
+  displayName: "Building and publishing Api Worker"
   inputs:
     command: 'publish'
     publishWebProjects: false
     projects: '$(apiWorkerProject)'
-    arguments: '-o "$(Build.BinariesDirectory)\ApiWorker\"'
-    modifyOutputPath: false
+    arguments: '-o workers'
+    modifyOutputPath: true
+    zipAfterPublish: true
 
 - task: DotNetCoreCLI@2
+  displayName: "Building and publishing Speaker Worker"
   inputs:
     command: 'publish'
     publishWebProjects: false
     projects: '$(speakerWorkerProject)'
-    arguments: '-o "$(Build.BinariesDirectory)\SpeakerWorker\"'
-    modifyOutputPath: false
-
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(Build.BinariesDirectory)\SpeakerWorker'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/SpeakerWorker.zip'
-    replaceExistingArchive: true
+    arguments: '-o workers'
+    modifyOutputPath: true
+    zipAfterPublish: true
 
 - task: VSTest@2
+  displayName: "Running tests"
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
 - task: CopyFiles@2
+  displayName: "Copy deployment files"
   inputs:
     SourceFolder: 'deployment'
     Contents: '*.json'
@@ -82,6 +84,7 @@ steps:
     OverWrite: true
 
 - task: PublishBuildArtifacts@1
+  displayName: "Publish artifacts"
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
