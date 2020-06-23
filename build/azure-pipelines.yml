@@ -46,15 +46,31 @@ steps:
 
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'build'
+    command: 'publish'
     projects: '$(apiWorkerProject)'
-    arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Worker\ApiWorker.zip"'
+    arguments: '-o "$(Build.BinariesDirectory)\ApiWorker\"'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.BinariesDirectory)\ApiWorker'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/ApiWorker.zip'
+    replaceExistingArchive: true
 
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'build'
+    command: 'publish'
     projects: '$(speakerWorkerProject)'
-    arguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\Worker\SpeakerWorker.zip"'
+    arguments: '-o "$(Build.BinariesDirectory)\SpeakerWorker\"'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.BinariesDirectory)\SpeakerWorker'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/SpeakerWorker.zip'
+    replaceExistingArchive: true
 
 - task: VSTest@2
   inputs:
