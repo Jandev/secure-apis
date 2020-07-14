@@ -3,10 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Speakers:Authentication:ClientId": {
-      "value": "6d7649c2-de4f-4ce4-83f5-422d4f6c5fe0"
+      "value": "unknown"
     },
     "Speakers:Authentication:ApplicationIdUri": {
-      "value": "api://6d7649c2-de4f-4ce4-83f5-422d4f6c5fe0"
+      "value": "api://unknown"
     },
     "Conferences:Authentication:ClientId": {
       "value": "unknown"
@@ -15,10 +15,10 @@
       "value": "api://unknown"
     },
     "Bff:SpeakerApiUri": {
-      "value": "https://janv-secureapi-speakers.azurewebsites.net/Speakers"
+      "value": "https://my-speaker-api.azurewebsites.net/Speakers"
     },
     "Bff:ConferencesApiUri": {
-      "value": "https://janv-secureapi-conferences.azurewebsites.net/BigConferences"
+      "value": "https://my-conferences-api.azurewebsites.net/BigConferences"
     } 
   }
 }
