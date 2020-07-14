@@ -312,7 +312,33 @@
             "requestTracingEnabled": true,
             "httpLoggingEnabled": true,
             "logsDirectorySizeLimit": 40,
-            "detailedErrorLoggingEnabled": true
+            "detailedErrorLoggingEnabled": true,
+            "ipSecurityRestrictions": [
+              {
+                  "vnetSubnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('backendVirtualNetwork').instanceName, variables('backendVirtualNetwork').subnets.appSubnet.instanceName)]",
+                  "action": "Allow",
+                  "tag": "Default",
+                  "priority": 100,
+                  "name": "backend-services"
+              },
+              {
+                  "ipAddress": "Any",
+                  "action": "Deny",
+                  "priority": 2147483647,
+                  "name": "Deny all",
+                  "description": "Deny all access"
+              }
+              ],
+              "scmIpSecurityRestrictions": [
+              {
+                  "ipAddress": "Any",
+                  "action": "Allow",
+                  "priority": 1,
+                  "name": "Allow all",
+                  "description": "Allow all access"
+              }
+            ],
+            "scmIpSecurityRestrictionsUseMain": false
           }
         },
         {
