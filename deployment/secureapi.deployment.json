@@ -19,10 +19,19 @@
     },
     "ConferencesApiUri": {
       "type": "string"
+    },
+    "utcShort": {
+      "type": "string",
+      "defaultValue": "[utcNow('d')]"
     }
   },
   "variables": {
     "projectPrefix": "janv-secureapi",
+    "defaultTags": {
+      "Project": "secureapi",
+      "Purpose": "livecoding",
+      "LastDeployed": "[parameters('utcShort')]"
+    },
     "serverfarm": {
       "instanceName": "secureapi-farm",
       "sku": "S1"
@@ -113,8 +122,7 @@
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2019-08-01",
       "location": "[resourceGroup().location]",
-      "tags": {
-      },
+      "tags": "[variables('defaultTags')]",
       "properties": {
         "reserved": false
       },
@@ -128,6 +136,7 @@
       "kind": "app",
       "name": "[variables('apis').backendForFrontend.instanceName]",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
       },
@@ -187,6 +196,7 @@
         "[concat('Microsoft.Web/Sites/', variables('apis').backendForFrontend.instanceName)]"
       ],
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "identity": {
         "type": "SystemAssigned"
       },
@@ -202,6 +212,7 @@
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2018-02-01",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites', variables('apis').backendForFrontend.instanceName)]",
         "[resourceId('Microsoft.Network/virtualNetworks/', variables('backendVirtualNetwork').instanceName)]"
@@ -218,6 +229,7 @@
       "kind": "app",
       "name": "[variables('apis').conferences.instanceName]",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
       },
@@ -289,6 +301,7 @@
       "kind": "app",
       "name": "[variables('apis').speakers.instanceName]",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
       },
@@ -361,6 +374,7 @@
       "type": "Microsoft.Web/sites",
       "name": "[variables('worker').speakers.instanceName]",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "kind": "functionapp",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
@@ -402,6 +416,7 @@
       "type": "Microsoft.Web/sites",
       "name": "[variables('worker').api.instanceName]",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "kind": "functionapp",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
@@ -441,6 +456,7 @@
       "type": "Microsoft.Insights/components",
       "apiVersion": "2018-05-01-preview",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "kind": "web",
       "properties": {
         "Application_Type": "web",
@@ -454,6 +470,7 @@
       "type": "Microsoft.Network/VirtualNetworks",
       "apiVersion": "2020-04-01",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "dependsOn": [],
       "properties": {
           "addressSpace": {
@@ -471,6 +488,7 @@
       "name": "[variables('storage').internal.instanceName]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "apiVersion": "2019-04-01",
       "kind": "StorageV2",
       "sku": {
@@ -481,6 +499,7 @@
       "name": "[variables('storage').speakerWorker.instanceName]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "apiVersion": "2019-04-01",
       "kind": "StorageV2",
       "sku": {
@@ -491,6 +510,7 @@
       "name": "[variables('storage').apiWorker.instanceName]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "apiVersion": "2019-04-01",
       "kind": "StorageV2",
       "sku": {
@@ -501,6 +521,7 @@
       "name": "[variables('eventgrid').topic.instanceName]",
       "type": "Microsoft.EventGrid/topics",
       "location": "[resourceGroup().location]",
+      "tags": "[variables('defaultTags')]",
       "apiVersion": "2018-01-01"
     },
     {
