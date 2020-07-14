@@ -2,22 +2,22 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "Authentication:Authority": {
+    "Speakers:Authentication:Authority": {
       "value": "https://login.microsoftonline.com/b1f8cb55-7d7a-4e8d-9641-51372b423350"
     },
-    "Authentication:ClientId": {
+    "Speakers:Authentication:ClientId": {
       "value": "6d7649c2-de4f-4ce4-83f5-422d4f6c5fe0"
     },
-    "Authentication:AppIdUri": {
+    "Speakers:Authentication:ApplicationIdUri": {
       "value": "api://6d7649c2-de4f-4ce4-83f5-422d4f6c5fe0"
     },
-    "ApplicationIdUri": {
+    "Bff:Speaker:ApplicationIdUri": {
       "value": "api://6d7649c2-de4f-4ce4-83f5-422d4f6c5fe0"
     },
-    "SpeakerApiUri": {
+    "Bff:SpeakerApiUri": {
       "value": "https://janv-secureapi-speakers.azurewebsites.net/Speakers"
     },
-    "ConferencesApiUri": {
+    "Bff:ConferencesApiUri": {
       "value": "https://janv-secureapi-conferences.azurewebsites.net/BigConferences"
     } 
   }
