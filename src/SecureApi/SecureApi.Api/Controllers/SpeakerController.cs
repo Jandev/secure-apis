@@ -94,7 +94,7 @@ namespace SecureApi.Api.Controllers
 
         private async Task<ApiCallDetails> GetSpeakers()
         {
-            string speakerApiUri = this.configuration["SpeakerApiUri"];
+            string speakerApiUri = this.configuration["Speakers:SpeakerApiUri"];
 
             var accessToken = await GenerateAccessToken();
 
@@ -116,7 +116,7 @@ namespace SecureApi.Api.Controllers
 
         private async Task<string> GenerateAccessToken()
         {
-            string applicationIdUri = this.configuration["ApplicationIdUri"];
+            string applicationIdUri = this.configuration["Speakers:ApplicationIdUri"];
             var tenantId = this.configuration["ActiveDirectory:TenantId"];
 
             // Create an access token useing the Managed Identity of this application.

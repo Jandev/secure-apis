@@ -39,7 +39,7 @@ namespace SecureApi.Api.Controllers
 
         private async Task<ApiCallDetails> InvokeConferencesService()
         {
-            string speakerApiUri = this.configuration["ConferencesApiUri"];
+            string speakerApiUri = this.configuration["Conferences:ConferencesApiUri"];
 
             var httpClient = this.clientFactory.CreateClient();
             var response = await httpClient.GetAsync(speakerApiUri);
