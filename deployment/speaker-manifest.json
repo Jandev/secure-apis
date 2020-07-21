@@ -1,0 +1,31 @@
+{
+    "appRoles": [
+        {
+            "allowedMemberTypes": [
+                "Application",
+                "User"
+            ],
+            "description": "Reader Role",
+            "displayName": "Speaker service reader",
+            "id": "42ee5891-7e50-4db9-a6d9-75ffc8cc1e9b",
+            "isEnabled": true,
+            "lang": null,
+            "origin": "Application",
+            "value": "SecureApi.Speaker.Reader"
+        },
+        {
+            "allowedMemberTypes": [
+                "Application",
+                "User"
+            ],
+            "description": "Writer Role",
+            "displayName": "Speaker service writer",
+            "id": "4f5a2cf2-1a76-45fa-8b5e-ed2a21e54e05",
+            "isEnabled": true,
+            "lang": null,
+            "origin": "Application",
+            "value": "SecureApi.Speaker.Writer"
+        }
+    ],
+    "oauth2AllowIdTokenImplicitFlow": false
+}
