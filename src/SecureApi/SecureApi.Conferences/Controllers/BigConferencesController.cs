@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SecureApi.Conferences.Controllers
 {
@@ -17,6 +18,7 @@ namespace SecureApi.Conferences.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "SecureApi.Speaker.Reader")]
         public IEnumerable<Conference> Get()
         {
             var conferences = new List<Conference>();
