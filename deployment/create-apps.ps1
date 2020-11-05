@@ -1,8 +1,11 @@
-$run = 4
+$run = 10
 $uniqueIdentifier = [guid]::NewGuid()
 $applicationName = "Speaker application $($run)"
 $applicationIdentifierUri = "api://$($uniqueIdentifier)"
 $replyUrl = "https://speaker-application/auth"
+
+$speakerReaderRoleId = "42ee5891-7e50-4db9-a6d9-75ffc8cc1e9b"
+$nameOfTheManagedIdentityNeedingPermission = "janv-secureapi-api"
 
 Write-Output "Creating $($applicationName)."
 # Output matches a manifest file
@@ -24,49 +27,64 @@ az ad app permission add `
                         --api $graphResourceId `
                         --api-permissions $userReadPermission
 Write-Output "Added User.Read permissions to Microsoft Graph for application $($createdApplication.appId)"
+$waitingDelayInSeconds = 30
 
-$waitingDelayInSeconds = 180
-Write-Warning "Letting AAD catch up and wait a $($waitingDelayInSeconds) seconds to actually grant the application permission."
+Write-Output "Waiting $($waitingDelayInSeconds) seconds."
 Start-Sleep -Seconds $waitingDelayInSeconds
-Write-Warning "Continuing with the script."
+# According to the answer over here: https://stackoverflow.com/a/62890221/352640
+# We need to do an admin consent first, this will create a service principal and granting permissions is now possible.
+Write-Output "Running Admin Consent to application $($createdApplication.appId)."
+az ad app permission admin-consent --id $createdApplication.appId
+
+# While creating this script I noticed it takes a bit of time for the service principal to be created.
+# Running the next commands immediatly will cause them to fail, or at least when I tested them.
+Write-Output "Waiting $($waitingDelayInSeconds) seconds."
+Start-Sleep -Seconds $waitingDelayInSeconds
+# Granting the permission, though this should not be necessary anymore as it's already granted via `admin-consent` above.
+Write-Output "Adding permission grant to application $($createdApplication.appId)."
 $enterpriseApplicationDetails = az ad app permission grant `
                                         --id $createdApplication.appId `
                                         --api $graphResourceId
                                         | ConvertFrom-Json
-# {
-#     "clientId": "aae58ae2-9588-454f-9124-434863cd9b55",
-#     "consentType": "AllPrincipals",
-#     "expiryTime": "2021-07-21T19:52:40.577023",
-#     "objectId": "4orlqoiVT0WRJENIY82bVTfM2zzlRBBBvSC2MpWQ0Z0",
-#     "odata.metadata": "https://graph.windows.net/b1f8cb55-7d7a-4e8d-9641-51372b423350/$metadata#oauth2PermissionGrants/@Element",
-#     "odatatype": null,
-#     "principalId": null,
-#     "resourceId": "3cdbcc37-44e5-4110-bd20-b6329590d19d",
-#     "scope": "user_impersonation",
-#     "startTime": "2020-07-21T19:52:40.577023"
-# }
 
+                                    
+Write-Output "Waiting $($waitingDelayInSeconds) seconds."
+Start-Sleep -Seconds $waitingDelayInSeconds
+
+Write-Output "Running Admin Consent to application $($createdApplication.appId) to get admin consent on set permissions."
+az ad app permission admin-consent --id $createdApplication.appId
+
+Write-Output "Retrieving details from service principal  $($enterpriseApplicationDetails.clientId)."
+$enterpriseApplication = az ad sp show --id $enterpriseApplicationDetails.clientId | ConvertFrom-Json # `clientId` matches the `Object Id` in the portal
+Write-Output "Retrieving details for the managed identity  $($nameOfTheManagedIdentityNeedingPermission)."
+$managedIdentityNeedingPermission = az ad sp list --display-name "janv-secureapi-api" | ConvertFrom-Json | Select-Object -First 1
+
+# Assign managed identity the roles for the services
+Write-Output "Assigning role $($speakerReaderRoleId) to managed identity $($managedIdentityNeedingPermission.objectId) for service principal $($enterpriseApplication.Id)."
+az rest `
+    --method post `
+    --uri https://graph.microsoft.com/beta/servicePrincipals/$($enterpriseApplication.objectId)/appRoleAssignments `
+    --headers "{'content-type': 'application/json'}" `
+    --body "{'appRoleId': '$($speakerReaderRoleId)', 'principalId': '$($managedIdentityNeedingPermission.objectId)', 'principalType': 'ServicePrincipal', 'resourceId': '$($enterpriseApplication.objectId)'}"
+
+###################
 # Delete all test applications
+###################
 # az ad app list --filter "startswith(displayname, 'Speaker application')" | ConvertFrom-Json| ForEach-Object {  az ad app delete --id $_.appId --verbose }
+###################
 
-# 		* Optional:
-# 			Add dummy scope
-# 			Add authorized client application
-# 				Client Id Visual Studio: 872cd9fa-d31f-45e0-9eab-6e460a02d1f1
+###################
+# Nice to haves
+###################
 
+# Set `User Assignment Required` for the $enterpriseApplication.
+# According to this answer on Stack Overflow it's not possible to set `User Assignment Required` via the Azure CLI at this time: https://stackoverflow.com/a/49547344/352640
+# You can use the `Set-AzureADServicePrincipal` (https://docs.microsoft.com/en-us/powershell/module/azuread/set-azureadserviceprincipal?view=azureadps-2.0&WT.mc_id=AZ-MVP-5003246) 
+# to set the -AppRoleAssignmentRequired $true, but I don't want to use the old Azure PowerShell commands over here.
 
-# * Assign managed identity the roles for the services
-# 	Object Id of Enterprise Application
-# 	Managed identity object id
-# 	Role id
-
-# ```powershell
-# az rest `
-# --method post `
-# --uri https://graph.microsoft.com/beta/servicePrincipals/[ObjectIdVanDeEnterpriseApplication]/appRoleAssignments `
-# --headers "{'content-type': 'application/json'}" `
-# --body "{'appRoleId': '[role id]', 'principalId': '[managed identity object id]', 'principalType': 'ServicePrincipal', 'resourceId': '[ObjectIdVanDeEnterpriseApplication]'}"
-# ```
-
-# * Enterprise Application
-# 	* User Assignment Required
+# Add authorized client application
+# For Visual Studio or the Azure CLI to connect, you need to have their identifiers added to the 
+# authorized client application list.
+# - Visual Studio: 872cd9fa-d31f-45e0-9eab-6e460a02d1f1
+# - Azure CLI: 04b07795-8ddb-461a-bbee-02f9e1bf7b46
+# Details over here: https://github.com/Azure/azure-sdk-for-net/issues/6172
