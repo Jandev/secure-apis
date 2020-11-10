@@ -119,7 +119,7 @@ namespace SecureApi.Api.Controllers
             string applicationIdUri = this.configuration["Speakers:ApplicationIdUri"];
             var tenantId = this.configuration["ActiveDirectory:TenantId"];
 
-            // Create an access token useing the Managed Identity of this application.
+            // Create an access token using the Managed Identity of this application.
             var azureServiceTokenProvider = new AzureServiceTokenProvider();
             var accessToken = await azureServiceTokenProvider
                 .GetAccessTokenAsync(

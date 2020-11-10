@@ -1,0 +1,31 @@
+{
+    "appRoles": [
+        {
+            "allowedMemberTypes": [
+                "Application",
+                "User"
+            ],
+            "description": "Reader Role",
+            "displayName": "Conference service reader",
+            "id": "2866fc2a-f9a0-4fc3-a0d4-c5ec8d287b3b",
+            "isEnabled": true,
+            "lang": null,
+            "origin": "Application",
+            "value": "SecureApi.Conference.Reader"
+        },
+        {
+            "allowedMemberTypes": [
+                "Application",
+                "User"
+            ],
+            "description": "Writer Role",
+            "displayName": "Conference service writer",
+            "id": "91448100-52f4-4f5b-a024-29833f151b8c",
+            "isEnabled": true,
+            "lang": null,
+            "origin": "Application",
+            "value": "SecureApi.Conference.Writer"
+        }
+    ],
+    "oauth2AllowIdTokenImplicitFlow": false
+}
