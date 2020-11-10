@@ -158,21 +158,31 @@ function Add-Role{
     Write-Output "Assigned role $($AppRoleId) to identity $($managedIdentityNeedingPermission.objectId) for service principal $($enterpriseApplication.objectId)."
 }
 
-$run = 18
-$uniqueIdentifier = [guid]::NewGuid()
-$myApplicationName = "Speaker application $($run)"
-$myApplicationIdentifierUri = "api://$($uniqueIdentifier)"
-$myReplyUrl = "https://speaker-application/auth"
-$createdEntepriseApplicationClientId = Add-AadApplicationWithServicePrincipal -DisplayName $myApplicationName -IdentifierUris $myApplicationIdentifierUri -ReplyUrls $myReplyUrl -AppRoles @speaker-manifest.json -Verbose
+$speakerApplicationUriId = [guid]::NewGuid()
+$speakerApplicationName = "Speaker application"
+$speakerApplicationIdentifierUri = "api://$($speakerApplicationUriId)"
+$speakerApplicationReplyUrl = "https://speaker-application/auth"
+$createdSpeakerApplicationEntepriseApplicationClientId = Add-AadApplicationWithServicePrincipal -DisplayName $speakerApplicationName -IdentifierUris $speakerApplicationIdentifierUri -ReplyUrls $speakerApplicationReplyUrl -AppRoles @speaker-manifest.json -Verbose
 
-$myRoleId = "42ee5891-7e50-4db9-a6d9-75ffc8cc1e9b"
+$speakerReaderRoleId = "42ee5891-7e50-4db9-a6d9-75ffc8cc1e9b"
 $nameOfTheManagedIdentityNeedingPermission = "janv-secureapi-api"
-Add-Role -EnterpriseApplicationClientId $createdEntepriseApplicationClientId -AppRoleId $myRoleId -IdentityDisplayName $nameOfTheManagedIdentityNeedingPermission -IdentityType "ServicePrincipal" -Verbose
+Add-Role -EnterpriseApplicationClientId $createdSpeakerApplicationEntepriseApplicationClientId -AppRoleId $speakerReaderRoleId -IdentityDisplayName $nameOfTheManagedIdentityNeedingPermission -IdentityType "ServicePrincipal" -Verbose
+
+$conferenceApplicationUriId = [guid]::NewGuid()
+$conferenceApplicationName = "Conferences application"
+$conferenceApplicationIdentifierUri = "api://$($conferenceApplicationUriId)"
+$conferenceApplicationReplyUrl = "https://conference-application/auth"
+$createdconferenceApplicationEntepriseApplicationClientId = Add-AadApplicationWithServicePrincipal -DisplayName $conferenceApplicationName -IdentifierUris $conferenceApplicationIdentifierUri -ReplyUrls $conferenceApplicationReplyUrl -AppRoles @conference-manifest.json -Verbose
+
+$conferenceReaderRoleId = "2866fc2a-f9a0-4fc3-a0d4-c5ec8d287b3b"
+Add-Role -EnterpriseApplicationClientId $createdconferenceApplicationEntepriseApplicationClientId -AppRoleId $conferenceReaderRoleId -IdentityDisplayName $nameOfTheManagedIdentityNeedingPermission -IdentityType "ServicePrincipal" -Verbose
 
 ###################
 # Delete all test applications
 ###################
 # az ad app list --filter "startswith(displayname, 'Speaker application')" | ConvertFrom-Json| ForEach-Object {  az ad app delete --id $_.appId --verbose }
+# Shouldn't be necessary, as removing the App Registration also removes the Enterprise Application, but for completeness sake.
+# az ad sp list --filter "startswith(displayname, 'Speaker application')" | ConvertFrom-Json| ForEach-Object {  az ad sp delete --id $_.appId --verbose }
 ###################
 
 ###################
