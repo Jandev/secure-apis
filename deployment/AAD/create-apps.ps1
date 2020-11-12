@@ -57,6 +57,14 @@ function Add-AadApplicationWithServicePrincipal {
                             | ConvertFrom-Json
     Write-Verbose -Message "Created application $($createdApplication.appId)."
 
+    # Got code from https://github.com/Azure/azure-cli/issues/11168#issuecomment-593385804
+    Write-Verbose -Message "Setting access token version to 2.0 for application $($createdApplication.appId)."
+    az rest `
+    --method PATCH `
+    --headers "Content-Type=application/json" `
+    --uri https://graph.microsoft.com/v1.0/applications/$($createdApplication.objectId)/ `
+    --body '{"api":{"requestedAccessTokenVersion": 2}}'
+
     Write-Verbose -Message "Adding User.Read permissions to Microsoft Graph for application $($createdApplication.appId)."
     $graphResourceId = "00000003-0000-0000-c000-000000000000"
     $userReadPermission = "e1fe6dd8-ba31-4d61-89e7-88639da4683d=Scope"
@@ -153,7 +161,7 @@ function Add-Role{
         --method post `
         --uri https://graph.microsoft.com/beta/servicePrincipals/$($enterpriseApplication.objectId)/appRoleAssignments `
         --headers "{'content-type': 'application/json'}" `
-    --body "{'appRoleId': '$($AppRoleId)', 'principalId': '$($managedIdentityNeedingPermission.objectId)', 'principalType': '$($IdentityType)', 'resourceId': '$($enterpriseApplication.objectId)'}"
+        --body "{'appRoleId': '$($AppRoleId)', 'principalId': '$($managedIdentityNeedingPermission.objectId)', 'principalType': '$($IdentityType)', 'resourceId': '$($enterpriseApplication.objectId)'}"
 
     Write-Output "Assigned role $($AppRoleId) to identity $($managedIdentityNeedingPermission.objectId) for service principal $($enterpriseApplication.objectId)."
 }
