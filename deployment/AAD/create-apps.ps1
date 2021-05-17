@@ -100,7 +100,7 @@ function Add-AadApplicationWithServicePrincipal {
     Write-Verbose -Message "Running Admin Consent to application $($createdApplication.appId) to get admin consent on set permissions."
     az ad app permission admin-consent --id $createdApplication.appId
 
-    Write-Information "Created application with Application Id: '$($createdApplication.appId)' and Enterprise Application object id: '$($enterpriseApplicationDetails.objectId)'."
+    Write-Information "Created application with Application Id: '$($createdApplication.appId)' (URI = ($($IdentifierUris))) and Enterprise Application object id: '$($enterpriseApplicationDetails.objectId)'."
 
     return $enterpriseApplicationDetails.clientId
 }
@@ -189,8 +189,10 @@ Add-Role -EnterpriseApplicationClientId $createdconferenceApplicationEntepriseAp
 # Delete all test applications
 ###################
 # az ad app list --filter "startswith(displayname, 'Speaker application')" | ConvertFrom-Json| ForEach-Object {  az ad app delete --id $_.appId --verbose }
+# az ad app list --filter "startswith(displayname, 'Conferences application')" | ConvertFrom-Json| ForEach-Object {  az ad app delete --id $_.appId --verbose }
 # Shouldn't be necessary, as removing the App Registration also removes the Enterprise Application, but for completeness sake.
 # az ad sp list --filter "startswith(displayname, 'Speaker application')" | ConvertFrom-Json| ForEach-Object {  az ad sp delete --id $_.appId --verbose }
+# az ad sp list --filter "startswith(displayname, 'Conferences application')" | ConvertFrom-Json| ForEach-Object {  az ad sp delete --id $_.appId --verbose }
 ###################
 
 ###################

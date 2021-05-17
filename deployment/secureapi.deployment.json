@@ -137,7 +137,8 @@
       "location": "[resourceGroup().location]",
       "tags": "[variables('defaultTags')]",
       "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
+        "httpsOnly": true
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
@@ -202,7 +203,8 @@
       },
       "properties": {
         "enabled": true,
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
+        "httpsOnly": true
       },
       "resources": [
       ]
@@ -231,7 +233,8 @@
       "location": "[resourceGroup().location]",
       "tags": "[variables('defaultTags')]",
       "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
+        "httpsOnly": true
       },
       "identity": {
         "type": "SystemAssigned"
@@ -306,7 +309,8 @@
       "location": "[resourceGroup().location]",
       "tags": "[variables('defaultTags')]",
       "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]"
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverfarm').instanceName)]",
+        "httpsOnly": true
       },
       "identity": {
         "type": "SystemAssigned"
@@ -390,7 +394,8 @@
         "clientAffinityEnabled": false,
         "siteConfig": {
           "alwaysOn": true
-        }
+        },
+        "httpsOnly": true
       },
       "resources": [
         {
@@ -432,7 +437,8 @@
         "clientAffinityEnabled": false,
         "siteConfig": {
           "alwaysOn": true
-        }
+        },
+        "httpsOnly": true
       },
       "resources": [
         {
