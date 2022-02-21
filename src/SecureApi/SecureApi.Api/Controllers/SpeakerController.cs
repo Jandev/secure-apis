@@ -12,6 +12,8 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+using Dapper;
 
 namespace SecureApi.Api.Controllers
 {
@@ -41,6 +43,18 @@ namespace SecureApi.Api.Controllers
             var response = await GetSpeakers();
 
             this.logger.LogInformation($"Executed {nameof(Get)}.");
+
+            return response;
+        }
+
+        [HttpGet("FromSql")]
+        public async Task<ApiCallDetails> GetFromSql()
+        {
+            this.logger.LogInformation($"Executing {nameof(GetFromSql)}.");
+
+            var response = await GetDataFromSql();
+
+            this.logger.LogInformation($"Executed {nameof(GetFromSql)}.");
 
             return response;
         }
@@ -130,5 +144,42 @@ namespace SecureApi.Api.Controllers
             return accessToken;
         }
 
+        private async Task<ApiCallDetails> GetDataFromSql()
+        {
+            var connectionString = this.configuration["SqlServer:ConnectionString"];
+            var tenantId = this.configuration["ActiveDirectory:TenantId"];
+
+            await using var connection = new SqlConnection(connectionString);
+            var azureServiceTokenProvider = new AzureServiceTokenProvider();
+            var accessToken = await azureServiceTokenProvider.GetAccessTokenAsync("https://database.windows.net/", tenantId);
+
+            connection.AccessToken = accessToken;
+
+            const string query = @"SELECT [id]
+                                          ,[text]
+                                    FROM [dbo].[demo]";
+
+            var results = await connection.QueryAsync<DemoEntity>(query);
+
+            return new ApiCallDetails
+            {
+                AccessToken = accessToken,
+                Body = JsonSerializer.Serialize(results)
+            };
+        }
+
+        private static bool ContainsUserInformation(string connectionString)
+        {
+            var builder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
+
+            return !string.IsNullOrWhiteSpace(builder.UserID) || !string.IsNullOrWhiteSpace(builder.Password) ||
+                   builder.IntegratedSecurity;
+        }
+    }
+
+    internal class DemoEntity
+    {
+        public Guid id { get; set; }
+        public string text { get; set; }
     }
 }
